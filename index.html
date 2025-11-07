@@ -41,6 +41,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- SheetJS Library for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <!-- Skip to main content for accessibility -->
@@ -225,6 +227,17 @@
 
                             <button type="submit" class="btn btn-primary">Send Message</button>
                         </form>
+
+                        <!-- Export Controls (admin only - shown if submissions exist) -->
+                        <div id="export-controls" class="export-controls" style="display: none;">
+                            <p class="submission-count">Total Submissions: <strong id="submission-count">0</strong></p>
+                            <button type="button" id="export-excel-btn" class="btn btn-secondary">
+                                Download All Submissions (Excel)
+                            </button>
+                            <button type="button" id="clear-submissions-btn" class="btn btn-secondary" style="margin-left: 10px;">
+                                Clear All Data
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

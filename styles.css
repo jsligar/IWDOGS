@@ -611,6 +611,31 @@ section:nth-child(even) {
     resize: vertical;
 }
 
+/* Export Controls */
+.export-controls {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, var(--slate-bg-light) 0%, var(--bg-white) 100%);
+    border-radius: 8px;
+    border: 2px solid var(--wheaten-warm);
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+.export-controls .submission-count {
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.1rem;
+    color: var(--slate-dark);
+}
+
+.export-controls .submission-count strong {
+    color: var(--wheaten-dark);
+    font-size: 1.3rem;
+}
+
+.export-controls button {
+    margin-top: var(--spacing-xs);
+}
+
 /* ===========================
    Footer
    =========================== */

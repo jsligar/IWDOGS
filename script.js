@@ -138,12 +138,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // In a real implementation, this would send to a backend
-            // For now, we'll show a success message
+            // Save submission to localStorage
+            saveSubmission({
+                name: name,
+                email: email,
+                phone: phone,
+                message: message,
+                timestamp: new Date().toISOString()
+            });
+
+            // Show success message
             showFormSuccess();
 
             // Reset form
             contactForm.reset();
+
+            // Update export controls
+            updateExportControls();
         });
     }
 
@@ -306,6 +317,106 @@ document.addEventListener('DOMContentLoaded', function() {
         const elementsToAnimate = document.querySelectorAll('.dog-card, .expectation-item, .contact-item');
         elementsToAnimate.forEach(el => animateObserver.observe(el));
     }
+
+    // ===========================
+    // Form Submission Management
+    // ===========================
+    const STORAGE_KEY = 'iwdogs-contact-submissions';
+
+    function saveSubmission(data) {
+        const submissions = getSubmissions();
+        submissions.push(data);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+    }
+
+    function getSubmissions() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+    }
+
+    function clearSubmissions() {
+        if (confirm('Are you sure you want to clear all submission data? This cannot be undone.')) {
+            localStorage.removeItem(STORAGE_KEY);
+            updateExportControls();
+            alert('All submissions have been cleared.');
+        }
+    }
+
+    function updateExportControls() {
+        const submissions = getSubmissions();
+        const exportControls = document.getElementById('export-controls');
+        const submissionCount = document.getElementById('submission-count');
+
+        if (submissions.length > 0) {
+            exportControls.style.display = 'block';
+            submissionCount.textContent = submissions.length;
+        } else {
+            exportControls.style.display = 'none';
+        }
+    }
+
+    // ===========================
+    // Excel Export Functionality
+    // ===========================
+    function exportToExcel() {
+        const submissions = getSubmissions();
+
+        if (submissions.length === 0) {
+            alert('No submissions to export.');
+            return;
+        }
+
+        // Prepare data for Excel
+        const excelData = submissions.map((sub, index) => ({
+            'Submission #': index + 1,
+            'Date & Time': new Date(sub.timestamp).toLocaleString(),
+            'Name': sub.name,
+            'Email': sub.email,
+            'Phone': sub.phone || 'N/A',
+            'Message': sub.message
+        }));
+
+        // Create workbook and worksheet
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(excelData);
+
+        // Set column widths
+        ws['!cols'] = [
+            { wch: 15 },  // Submission #
+            { wch: 20 },  // Date & Time
+            { wch: 25 },  // Name
+            { wch: 30 },  // Email
+            { wch: 18 },  // Phone
+            { wch: 50 }   // Message
+        ];
+
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'Contact Submissions');
+
+        // Generate filename with current date
+        const date = new Date().toISOString().split('T')[0];
+        const filename = `iwdogs-contacts-${date}.xlsx`;
+
+        // Download the file
+        XLSX.writeFile(wb, filename);
+    }
+
+    // ===========================
+    // Event Listeners for Export Controls
+    // ===========================
+    const exportBtn = document.getElementById('export-excel-btn');
+    const clearBtn = document.getElementById('clear-submissions-btn');
+
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportToExcel);
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearSubmissions);
+    }
+
+    // Initialize export controls on page load
+    updateExportControls();
 
     // ===========================
     // Console message for developers
