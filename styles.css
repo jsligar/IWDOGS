@@ -360,6 +360,54 @@ img {
 }
 
 /* ===========================
+   Background Watermark
+   =========================== */
+.watermark {
+    position: relative;
+    overflow: hidden;
+}
+
+.watermark::before {
+    content: 'MOUNT OLYMPUS';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-family: var(--font-heading);
+    font-size: 8rem;
+    font-weight: bold;
+    color: var(--slate-lighter);
+    opacity: 0.03;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 0;
+    letter-spacing: 0.5rem;
+    text-transform: uppercase;
+}
+
+.watermark > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Alternative watermark styles for different sections */
+.watermark-subtle::before {
+    opacity: 0.02;
+    font-size: 10rem;
+}
+
+.watermark-initials::before {
+    content: 'MOIW';
+    font-size: 12rem;
+    opacity: 0.04;
+}
+
+.watermark-small::before {
+    font-size: 6rem;
+    opacity: 0.04;
+}
+
+/* ===========================
    Image Placeholders
    =========================== */
 .image-placeholder {
@@ -760,6 +808,23 @@ section:nth-child(even) {
     .dogs-grid {
         grid-template-columns: 1fr;
     }
+
+    /* Watermark adjustments for tablet */
+    .watermark::before {
+        font-size: 6rem;
+    }
+
+    .watermark-subtle::before {
+        font-size: 7rem;
+    }
+
+    .watermark-initials::before {
+        font-size: 8rem;
+    }
+
+    .watermark-small::before {
+        font-size: 4rem;
+    }
 }
 
 /* Mobile */
@@ -801,6 +866,24 @@ section:nth-child(even) {
     .expectations {
         grid-template-columns: 1fr;
     }
+
+    /* Watermark adjustments for mobile */
+    .watermark::before {
+        font-size: 3rem;
+        letter-spacing: 0.2rem;
+    }
+
+    .watermark-subtle::before {
+        font-size: 4rem;
+    }
+
+    .watermark-initials::before {
+        font-size: 5rem;
+    }
+
+    .watermark-small::before {
+        font-size: 2.5rem;
+    }
 }
 
 /* High contrast mode support */
@@ -839,5 +922,10 @@ section:nth-child(even) {
     .hero {
         background: none;
         color: #000;
+    }
+
+    /* Hide watermarks when printing */
+    .watermark::before {
+        display: none;
     }
 }
