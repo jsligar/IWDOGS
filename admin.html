@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Mount Olympus Irish Wolfhounds</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-medium) 100%);
+        }
+
+        .login-container {
+            background: var(--bg-white);
+            padding: var(--spacing-xl);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .login-header h1 {
+            color: var(--slate-darkest);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .login-header p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .error-message {
+            background-color: #fee;
+            color: #c33;
+            padding: var(--spacing-sm);
+            border-radius: 4px;
+            border: 1px solid #c33;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: var(--spacing-sm);
+            border-radius: 4px;
+            border: 1px solid #155724;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .btn-login {
+            width: 100%;
+            margin-top: var(--spacing-sm);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: var(--spacing-md);
+        }
+
+        .back-link a {
+            color: var(--slate-medium);
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: var(--spacing-sm);
+            color: var(--text-light);
+        }
+
+        .loading.show {
+            display: block;
+        }
+    </style>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Admin Login</h1>
+            <p>Mount Olympus Irish Wolfhounds</p>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+        <div id="loading" class="loading">Logging in...</div>
+
+        <form id="login-form" class="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    autocomplete="email"
+                    placeholder="admin@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                    placeholder="Enter your password">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login">Login</button>
+        </form>
+
+        <div class="back-link">
+            <a href="index.html">← Back to Website</a>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="admin-auth.js"></script>
+</body>
+</html>
