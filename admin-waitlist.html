@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waitlist - Mount Olympus Admin</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--slate-darkest);
+            min-height: 100vh;
+            color: var(--wheaten-light);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--slate-dark);
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .admin-nav a {
+            padding: 10px 20px;
+            background: var(--slate-dark);
+            color: var(--wheaten-light);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .admin-nav a:hover,
+        .admin-nav a.active {
+            background: var(--wheaten-warm);
+            color: var(--slate-darkest);
+        }
+
+        .coming-soon {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .coming-soon h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .coming-soon p {
+            font-size: 18px;
+            color: var(--wheaten-warm);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>📝 Waitlist Management</h1>
+        </div>
+
+        <nav class="admin-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="admin-dogs.html">Dogs</a>
+            <a href="admin-litters.html">Litters</a>
+            <a href="admin-puppies.html">Puppies</a>
+            <a href="admin-applications.html">Applications</a>
+            <a href="admin-waitlist.html" class="active">Waitlist</a>
+            <a href="admin-orders.html">Orders</a>
+        </nav>
+
+        <div class="coming-soon">
+            <h2>Waitlist & Reservations</h2>
+            <p>Manage puppy reservations, pick order, and deposit tracking</p>
+            <p style="margin-top: 20px; font-size: 14px;">This feature is under development and will be available soon.</p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+        firebase.auth().onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'admin.html';
+            }
+        });
+    </script>
+</body>
+</html>

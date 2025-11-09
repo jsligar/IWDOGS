@@ -2,13 +2,91 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Contact submissions collection
-    match /contact-submissions/{submission} {
-      // Allow anyone to create (submit the form)
-      allow create: if true;
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
 
-      // Only authenticated users can read, update, or delete
-      allow read, update, delete: if request.auth != null;
+    function isOwner() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner';
+    }
+
+    function isBreedingManager() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['owner', 'breeding_manager'];
+    }
+
+    function isStaff() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['owner', 'breeding_manager', 'kennel_tech', 'sales', 'accountant'];
+    }
+
+    // Users collection - for role management
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner();
+    }
+
+    // Dogs collection - breeding stock profiles
+    match /dogs/{dogId} {
+      allow read: if isStaff();
+      allow create, update, delete: if isBreedingManager();
+    }
+
+    // Litters collection - litter records
+    match /litters/{litterId} {
+      allow read: if isStaff();
+      allow create, update, delete: if isBreedingManager();
+    }
+
+    // Puppies collection - individual puppy records
+    match /puppies/{puppyId} {
+      allow read: if isStaff();
+      allow create, update, delete: if isBreedingManager();
+    }
+
+    // Applicants collection - puppy applications
+    match /applicants/{applicantId} {
+      allow create: if true; // Public application form
+      allow read: if isStaff();
+      allow update, delete: if isStaff();
+    }
+
+    // Waitlist collection - reservation waitlist
+    match /waitlist/{waitlistId} {
+      allow read, write: if isStaff();
+    }
+
+    // Contracts collection - puppy sale contracts
+    match /contracts/{contractId} {
+      allow read, write: if isStaff();
+    }
+
+    // Orders collection - puppy sales and payments
+    match /orders/{orderId} {
+      allow read, write: if isStaff();
+    }
+
+    // Appointments collection - vet visits, pickups, etc
+    match /appointments/{appointmentId} {
+      allow read: if isStaff();
+      allow create, update, delete: if isBreedingManager();
+    }
+
+    // Media collection - photos and videos
+    match /media/{mediaId} {
+      allow read: if isStaff();
+      allow create, update, delete: if isBreedingManager();
+    }
+
+    // Contact submissions collection (existing)
+    match /contact-submissions/{submission} {
+      allow create: if true;
+      allow read, update, delete: if isAuthenticated();
     }
 
     // Deny all other collections by default
