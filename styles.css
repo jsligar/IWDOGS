@@ -628,6 +628,240 @@ section:nth-child(even) {
 }
 
 /* ===========================
+   Health Testing Section
+   =========================== */
+.health-testing-section {
+    background: linear-gradient(135deg, var(--bg-white) 0%, var(--slate-bg-light) 100%);
+    padding: var(--spacing-xl) var(--spacing-sm);
+}
+
+.health-tests {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+}
+
+.health-test-item {
+    background: var(--bg-white);
+    padding: var(--spacing-md);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--shadow);
+    border-top: 4px solid var(--wheaten-warm);
+    transition: var(--transition-normal);
+}
+
+.health-test-item:hover {
+    box-shadow: 0 4px 12px var(--shadow);
+    transform: translateY(-4px);
+}
+
+.health-test-item h3 {
+    color: var(--slate-darkest);
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.health-commitment {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, var(--wheaten-light) 0%, var(--wheaten-warm) 100%);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px var(--shadow-warm);
+}
+
+.health-commitment h3 {
+    color: var(--slate-darkest);
+    margin-bottom: var(--spacing-sm);
+}
+
+.health-commitment p {
+    color: var(--slate-dark);
+    font-size: 1.05rem;
+}
+
+/* ===========================
+   Process Steps
+   =========================== */
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spacing-md);
+    margin: var(--spacing-md) 0 var(--spacing-lg);
+}
+
+.process-step {
+    background: linear-gradient(135deg, var(--bg-white) 0%, var(--slate-bg-light) 100%);
+    padding: var(--spacing-md);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--shadow);
+    border-left: 4px solid var(--wheaten-dark);
+    transition: var(--transition-normal);
+    position: relative;
+}
+
+.process-step:hover {
+    box-shadow: 0 4px 8px var(--shadow);
+    transform: translateX(4px);
+}
+
+.process-step h4 {
+    color: var(--wheaten-dark);
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 700;
+}
+
+/* ===========================
+   Testimonials Section
+   =========================== */
+.testimonials-section {
+    background: linear-gradient(135deg, var(--slate-bg-light) 0%, var(--bg-white) 100%);
+    padding: var(--spacing-xl) var(--spacing-sm);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+}
+
+.testimonial-card {
+    background: var(--bg-white);
+    padding: var(--spacing-md);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--shadow);
+    border-top: 4px solid var(--wheaten-warm);
+    transition: var(--transition-normal);
+}
+
+.testimonial-card:hover {
+    box-shadow: 0 6px 12px var(--shadow);
+    transform: translateY(-4px);
+}
+
+.testimonial-quote {
+    margin-bottom: var(--spacing-md);
+}
+
+.testimonial-quote p {
+    font-style: italic;
+    color: var(--slate-dark);
+    line-height: 1.8;
+    position: relative;
+}
+
+.testimonial-quote p::before {
+    content: '"';
+    font-size: 3rem;
+    color: var(--wheaten-warm);
+    position: absolute;
+    left: -1rem;
+    top: -0.5rem;
+    font-family: Georgia, serif;
+    opacity: 0.3;
+}
+
+.testimonial-author {
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--spacing-sm);
+    border-top: 2px solid var(--slate-bg);
+}
+
+.testimonial-author strong {
+    color: var(--slate-darkest);
+    font-size: 1.05rem;
+    margin-bottom: 0.25rem;
+}
+
+.testimonial-author span {
+    color: var(--slate-light);
+    font-size: 0.9rem;
+}
+
+/* ===========================
+   FAQ Section
+   =========================== */
+.faq-section {
+    background: var(--bg-white);
+    padding: var(--spacing-xl) var(--spacing-sm);
+}
+
+.faq-list {
+    max-width: 900px;
+    margin: var(--spacing-md) auto 0;
+}
+
+.faq-item {
+    background: linear-gradient(135deg, var(--slate-bg-light) 0%, var(--bg-white) 100%);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--shadow);
+    border-left: 4px solid var(--wheaten-warm);
+    transition: var(--transition-normal);
+}
+
+.faq-item:hover {
+    box-shadow: 0 4px 8px var(--shadow);
+    border-left-color: var(--wheaten-dark);
+}
+
+.faq-item h3 {
+    color: var(--slate-darkest);
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+}
+
+.faq-item p {
+    color: var(--slate-dark);
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+/* ===========================
+   Social Media Links
+   =========================== */
+.social-media-links {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--slate-medium) 0%, var(--slate-dark) 100%);
+    border-radius: 50%;
+    color: var(--text-white);
+    transition: var(--transition-normal);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.social-link:hover,
+.social-link:focus {
+    background: linear-gradient(135deg, var(--wheaten-warm) 0%, var(--wheaten-dark) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.social-link svg {
+    width: 20px;
+    height: 20px;
+}
+
+.footer-address {
+    margin-top: var(--spacing-sm);
+    line-height: 1.6;
+}
+
+/* ===========================
    Contact Section
    =========================== */
 .contact-content {
@@ -888,6 +1122,17 @@ section:nth-child(even) {
         grid-template-columns: 1fr;
     }
 
+    .health-tests,
+    .process-steps,
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .testimonial-quote p::before {
+        font-size: 2rem;
+        left: -0.5rem;
+    }
+
     /* Watermark adjustments for tablet */
     .watermark::before {
         font-size: 6rem;
@@ -952,6 +1197,16 @@ section:nth-child(even) {
 
     .expectations {
         grid-template-columns: 1fr;
+    }
+
+    .health-tests,
+    .process-steps,
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .social-media-links {
+        justify-content: center;
     }
 
     /* Watermark adjustments for mobile */
