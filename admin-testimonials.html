@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Testimonials - Admin Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-medium) 100%);
+            color: var(--text-white);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            color: var(--wheaten-light);
+            margin: 0;
+        }
+
+        .testimonial-form {
+            background: var(--bg-white);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px var(--shadow);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--slate-lighter);
+            border-radius: 4px;
+            font-family: var(--font-primary);
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .testimonials-list {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .testimonial-item {
+            background: var(--bg-white);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow);
+            border-left: 4px solid var(--wheaten-warm);
+        }
+
+        .testimonial-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--slate-darkest);
+        }
+
+        .testimonial-location {
+            color: var(--slate-light);
+            font-size: 0.9rem;
+        }
+
+        .testimonial-quote {
+            font-style: italic;
+            color: var(--slate-dark);
+            margin: var(--spacing-sm) 0;
+            line-height: 1.6;
+        }
+
+        .testimonial-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-sm);
+        }
+
+        .btn-edit {
+            background: var(--slate-medium);
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: var(--slate-light);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--text-light);
+        }
+
+        .message {
+            padding: var(--spacing-sm);
+            border-radius: 4px;
+            margin-bottom: var(--spacing-md);
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1>Manage Testimonials</h1>
+                <p style="margin: 0; opacity: 0.9;">Customer reviews and feedback</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <a href="dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <div class="testimonial-form">
+            <h2 id="form-title">Add New Testimonial</h2>
+            <form id="testimonial-form">
+                <input type="hidden" id="testimonial-id">
+
+                <div class="form-group">
+                    <label for="author-name">Author Name <span style="color: red;">*</span></label>
+                    <input type="text" id="author-name" required placeholder="e.g., Sarah & Mike T.">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location <span style="color: red;">*</span></label>
+                    <input type="text" id="location" required placeholder="e.g., California">
+                </div>
+
+                <div class="form-group">
+                    <label for="quote">Testimonial Quote <span style="color: red;">*</span></label>
+                    <textarea id="quote" required placeholder="Enter the testimonial text..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="display-order">Display Order</label>
+                    <input type="number" id="display-order" min="0" value="0" placeholder="0 = first, 1 = second, etc.">
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary">Save Testimonial</button>
+                    <button type="button" id="cancel-edit" class="btn btn-cancel" style="display: none;">Cancel Edit</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="testimonial-form">
+            <h2>Current Testimonials</h2>
+            <div id="testimonials-list" class="testimonials-list">
+                <div class="empty-state">Loading testimonials...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="admin-testimonials.js"></script>
+</body>
+</html>
