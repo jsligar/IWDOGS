@@ -21,6 +21,9 @@ if (typeof firebase !== 'undefined') {
     auth = firebase.auth();
     db = firebase.firestore();
     storage = firebase.storage();
+    console.log('Firebase initialized successfully');
+} else {
+    console.error('Firebase SDK not loaded!');
 }
 
 // Export for use in other files

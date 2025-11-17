@@ -27,11 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
             showLoading();
 
             // Sign in with Firebase Authentication
+            console.log('Attempting login with email:', email);
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     // Signed in successfully
                     const user = userCredential.user;
-                    console.log('Logged in:', user.email);
+                    console.log('Logged in successfully:', user.email);
 
                     hideLoading();
                     showSuccess('Login successful! Redirecting...');
