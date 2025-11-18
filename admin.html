@@ -100,6 +100,10 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js?v=2"></script>
+    <script src="admin-auth.js?v=2"></script>
 </head>
 <body>
     <div class="login-container">
@@ -111,6 +115,10 @@
         <div id="error-message" class="error-message"></div>
         <div id="success-message" class="success-message"></div>
         <div id="loading" class="loading">Logging in...</div>
+        <div id="debug-info" style="background: #f0f0f0; padding: 10px; border-radius: 4px; font-size: 0.85em; margin-bottom: 15px; display: none;">
+            <strong>Debug Info:</strong><br>
+            <span id="debug-text"></span>
+        </div>
 
         <form id="login-form" class="login-form">
             <div class="form-group">
@@ -142,8 +150,5 @@
             <a href="index.html">← Back to Website</a>
         </div>
     </div>
-
-    <script src="firebase-config.js"></script>
-    <script src="admin-auth.js"></script>
 </body>
 </html>

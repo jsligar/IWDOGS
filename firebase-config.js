@@ -3,12 +3,13 @@
 // Get these from: Firebase Console > Project Settings > Your Apps > Web App
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAK2UzysoQe83NlEH289QdrPZXDJP1-Rp0",
+    authDomain: "iwdogs-2e4c1.firebaseapp.com",
+    projectId: "iwdogs-2e4c1",
+    storageBucket: "iwdogs-2e4c1.appspot.com",
+    messagingSenderId: "685239360237",
+    appId: "1:685239360237:web:ec6f3d94f3202bbfbd0ae4",
+    measurementId: "G-E39305GHEE"
 };
 
 // Initialize Firebase (will be imported in other files)
@@ -19,8 +20,16 @@ let app, auth, db, storage;
 if (typeof firebase !== 'undefined') {
     app = firebase.initializeApp(firebaseConfig);
     auth = firebase.auth();
-    db = firebase.firestore();
-    storage = firebase.storage();
+    
+    // Only initialize Firestore if the SDK is loaded
+    if (firebase.firestore) {
+        db = firebase.firestore();
+    }
+    
+    // Only initialize Storage if the SDK is loaded
+    if (firebase.storage) {
+        storage = firebase.storage();
+    }
 }
 
 // Export for use in other files
