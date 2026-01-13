@@ -83,9 +83,33 @@ service cloud.firestore {
       allow create, update, delete: if isBreedingManager();
     }
 
-    // Contact submissions collection (existing)
+    // Contact submissions collection with validation
     match /contact-submissions/{submission} {
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'message', 'timestamp'])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 100
+                    && request.resource.data.email is string
+                    && request.resource.data.email.matches('.*@.*\\..*')
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() > 0
+                    && request.resource.data.message.size() <= 5000;
+      allow read, update, delete: if isAuthenticated();
+    }
+
+    // Products collection - memorabilia shop items
+    match /products/{productId} {
+      allow read: if true; // Public can view products
+      allow create, update, delete: if isAuthenticated();
+    }
+
+    // Product orders collection - memorabilia purchases
+    match /product-orders/{orderId} {
+      allow create: if request.resource.data.keys().hasAll(['items', 'customer', 'total', 'timestamp'])
+                    && request.resource.data.customer.name is string
+                    && request.resource.data.customer.name.size() > 0
+                    && request.resource.data.customer.email is string
+                    && request.resource.data.customer.email.matches('.*@.*\\..*');
       allow read, update, delete: if isAuthenticated();
     }
 

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Product Management - Mount Olympus Irish Wolfhounds</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .products-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+
+        .products-header {
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-medium) 100%);
+            color: var(--text-white);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .products-header h1 {
+            color: var(--wheaten-light);
+            margin: 0;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .product-card {
+            background: var(--bg-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: var(--slate-bg-light);
+        }
+
+        .product-card-content {
+            padding: var(--spacing-md);
+        }
+
+        .product-card h3 {
+            margin: 0 0 var(--spacing-xs) 0;
+            color: var(--slate-darkest);
+        }
+
+        .product-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xs);
+            margin: var(--spacing-sm) 0;
+            font-size: 0.9rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-sm);
+        }
+
+        .product-actions button {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            max-width: 600px;
+            margin: 50px auto;
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2rem;
+            color: var(--text-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+    <div class="products-container">
+        <div class="products-header">
+            <div>
+                <h1>Product Management</h1>
+                <p style="margin: 0; opacity: 0.9;">Shop Memorabilia</p>
+            </div>
+            <div style="display: flex; gap: var(--spacing-sm);">
+                <button id="add-product-btn" class="btn btn-primary">Add New Product</button>
+                <a href="dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+
+        <div id="loading" class="loading-spinner">Loading products...</div>
+
+        <div id="products-container" class="products-grid" style="display: none;">
+            <!-- Products will be loaded here -->
+        </div>
+
+        <div id="no-products" style="display: none; text-align: center; padding: var(--spacing-xl);">
+            <h2>No Products Yet</h2>
+            <p>Click "Add New Product" to create your first shop item.</p>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 id="modal-title">Add New Product</h2>
+
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+
+                <div class="form-group">
+                    <label for="product-name">Product Name *</label>
+                    <input type="text" id="product-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-description">Description *</label>
+                    <textarea id="product-description" rows="3" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-price">Price ($) *</label>
+                        <input type="number" id="product-price" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-stock">Stock *</label>
+                        <input type="number" id="product-stock" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-category">Category *</label>
+                        <select id="product-category" required>
+                            <option value="">Select category</option>
+                            <option value="apparel">Apparel</option>
+                            <option value="accessories">Accessories</option>
+                            <option value="art">Art & Prints</option>
+                            <option value="collectibles">Collectibles</option>
+                            <option value="home">Home Decor</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-active">Status *</label>
+                        <select id="product-active" required>
+                            <option value="true">Active (Visible)</option>
+                            <option value="false">Inactive (Hidden)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-image">Image URL</label>
+                    <input type="url" id="product-image" placeholder="https://...">
+                    <small style="color: var(--text-light);">Enter image URL or leave blank for default wolfhound logo</small>
+                </div>
+
+                <div style="display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md);">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Product</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="admin-auth.js"></script>
+    <script>
+        // Product management functionality
+        const productsContainer = document.getElementById('products-container');
+        const loadingDiv = document.getElementById('loading');
+        const noProductsDiv = document.getElementById('no-products');
+        const productModal = document.getElementById('product-modal');
+        const productForm = document.getElementById('product-form');
+
+        document.getElementById('add-product-btn').addEventListener('click', () => openModal());
+        productForm.addEventListener('submit', saveProduct);
+
+        // Load products
+        loadProducts();
+
+        function loadProducts() {
+            if (!db) {
+                console.error('Firestore not initialized');
+                return;
+            }
+
+            db.collection('products')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot((snapshot) => {
+                    if (snapshot.empty) {
+                        productsContainer.style.display = 'none';
+                        noProductsDiv.style.display = 'block';
+                        loadingDiv.style.display = 'none';
+                        return;
+                    }
+
+                    productsContainer.innerHTML = '';
+                    productsContainer.style.display = 'grid';
+                    noProductsDiv.style.display = 'none';
+                    loadingDiv.style.display = 'none';
+
+                    snapshot.forEach((doc) => {
+                        const product = { id: doc.id, ...doc.data() };
+                        const card = createProductCard(product);
+                        productsContainer.appendChild(card);
+                    });
+                }, (error) => {
+                    console.error('Error loading products:', error);
+                    alert('Error loading products: ' + error.message);
+                });
+        }
+
+        function createProductCard(product) {
+            const div = document.createElement('div');
+            div.className = 'product-card';
+
+            const activeClass = product.active ? 'badge-active' : 'badge-inactive';
+            const activeText = product.active ? 'Active' : 'Inactive';
+
+            div.innerHTML = `
+                <img src="${product.image || 'images/winged-wolfhound-standing.png'}" alt="${product.name}">
+                <div class="product-card-content">
+                    <h3>${escapeHtml(product.name)}</h3>
+                    <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: var(--spacing-sm);">
+                        ${escapeHtml(product.description || '')}
+                    </p>
+                    <div class="product-meta">
+                        <div><strong>Price:</strong> $${product.price.toFixed(2)}</div>
+                        <div><strong>Stock:</strong> ${product.stock || 0}</div>
+                        <div><strong>Category:</strong> ${product.category}</div>
+                        <div><span class="badge ${activeClass}">${activeText}</span></div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-secondary" onclick="editProduct('${product.id}')">Edit</button>
+                        <button class="btn btn-secondary" style="background: #dc3545;" onclick="deleteProduct('${product.id}', '${escapeHtml(product.name)}')">Delete</button>
+                    </div>
+                </div>
+            `;
+
+            return div;
+        }
+
+        function openModal(productId = null) {
+            const modalTitle = document.getElementById('modal-title');
+            const form = document.getElementById('product-form');
+            form.reset();
+            document.getElementById('product-id').value = '';
+
+            if (productId) {
+                modalTitle.textContent = 'Edit Product';
+                loadProductData(productId);
+            } else {
+                modalTitle.textContent = 'Add New Product';
+            }
+
+            productModal.style.display = 'block';
+        }
+
+        function closeModal() {
+            productModal.style.display = 'none';
+        }
+
+        function loadProductData(productId) {
+            db.collection('products').doc(productId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const product = doc.data();
+                        document.getElementById('product-id').value = productId;
+                        document.getElementById('product-name').value = product.name;
+                        document.getElementById('product-description').value = product.description || '';
+                        document.getElementById('product-price').value = product.price;
+                        document.getElementById('product-stock').value = product.stock || 0;
+                        document.getElementById('product-category').value = product.category;
+                        document.getElementById('product-active').value = product.active.toString();
+                        document.getElementById('product-image').value = product.image || '';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error loading product:', error);
+                    alert('Error loading product: ' + error.message);
+                });
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+
+            const productId = document.getElementById('product-id').value;
+            const productData = {
+                name: document.getElementById('product-name').value.trim(),
+                description: document.getElementById('product-description').value.trim(),
+                price: parseFloat(document.getElementById('product-price').value),
+                stock: parseInt(document.getElementById('product-stock').value),
+                category: document.getElementById('product-category').value,
+                active: document.getElementById('product-active').value === 'true',
+                image: document.getElementById('product-image').value.trim() || null,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            const savePromise = productId
+                ? db.collection('products').doc(productId).update(productData)
+                : db.collection('products').add({
+                    ...productData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+            savePromise
+                .then(() => {
+                    alert(productId ? 'Product updated successfully!' : 'Product added successfully!');
+                    closeModal();
+                })
+                .catch((error) => {
+                    console.error('Error saving product:', error);
+                    alert('Error saving product: ' + error.message);
+                });
+        }
+
+        window.editProduct = function(productId) {
+            openModal(productId);
+        };
+
+        window.deleteProduct = function(productId, productName) {
+            if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+                db.collection('products').doc(productId).delete()
+                    .then(() => {
+                        alert('Product deleted successfully!');
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting product:', error);
+                        alert('Error deleting product: ' + error.message);
+                    });
+            }
+        };
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal when clicking outside
+        productModal.addEventListener('click', (e) => {
+            if (e.target === productModal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
