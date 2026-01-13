@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Page Not Found - Mount Olympus Irish Wolfhounds</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="images/winged-wolfhound-standing.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/winged-wolfhound-standing.png">
+    <link rel="apple-touch-icon" href="images/winged-wolfhound-standing.png">
+
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-medium) 100%);
+            padding: var(--spacing-md);
+        }
+
+        .error-container {
+            max-width: 600px;
+            text-align: center;
+            background: var(--bg-white);
+            padding: var(--spacing-xl);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            color: var(--slate-medium);
+            margin: 0;
+            line-height: 1;
+            font-family: var(--font-heading);
+        }
+
+        .error-title {
+            font-size: 2rem;
+            color: var(--slate-darkest);
+            margin: var(--spacing-sm) 0;
+        }
+
+        .error-message {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .error-image {
+            max-width: 200px;
+            margin: var(--spacing-md) auto;
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+
+        .error-links {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .countdown {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: var(--spacing-md);
+            font-style: italic;
+        }
+
+        @media (max-width: 480px) {
+            .error-code {
+                font-size: 5rem;
+            }
+
+            .error-title {
+                font-size: 1.5rem;
+            }
+
+            .error-container {
+                padding: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <div class="error-container">
+            <img src="images/winged-wolfhound-profile.png"
+                 alt="Wolfhound silhouette"
+                 class="error-image">
+
+            <h1 class="error-code">404</h1>
+            <h2 class="error-title">Page Not Found</h2>
+            <p class="error-message">
+                Sorry, we couldn't find the page you're looking for.
+                The page may have been moved, deleted, or never existed.
+            </p>
+
+            <div class="error-links">
+                <a href="/" class="btn btn-primary">Return Home</a>
+                <a href="/#contact" class="btn btn-secondary">Contact Us</a>
+            </div>
+
+            <p class="countdown" id="countdown">
+                Redirecting to home page in <span id="timer">10</span> seconds...
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-redirect after 10 seconds
+        let timeLeft = 10;
+        const timerElement = document.getElementById('timer');
+        const countdownElement = document.getElementById('countdown');
+
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                window.location.href = '/';
+            }
+        }, 1000);
+
+        // Allow user to cancel redirect by interacting with the page
+        document.addEventListener('click', () => {
+            clearInterval(countdown);
+            countdownElement.style.display = 'none';
+        });
+
+        // Log 404 to console for debugging
+        console.log('404 Error - Page not found:', window.location.href);
+
+        // Track 404 in Google Analytics if available
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_not_found', {
+                'page_location': window.location.href,
+                'page_referrer': document.referrer
+            });
+        }
+    </script>
+</body>
+</html>

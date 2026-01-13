@@ -10,11 +10,77 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove the existing submit handler from script.js
         // and add our Firebase handler
         contactForm.addEventListener('submit', handleFirebaseSubmit);
+
+        // Clear errors on input
+        const formFields = contactForm.querySelectorAll('input, textarea');
+        formFields.forEach(field => {
+            field.addEventListener('input', function() {
+                clearFieldError(this.id);
+            });
+        });
+    }
+
+    // Helper function to show field error
+    function showFieldError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + '-error');
+
+        if (field && errorDiv) {
+            field.classList.add('error');
+            field.setAttribute('aria-invalid', 'true');
+            errorDiv.textContent = message;
+        }
+    }
+
+    // Helper function to clear field error
+    function clearFieldError(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + '-error');
+
+        if (field && errorDiv) {
+            field.classList.remove('error');
+            field.setAttribute('aria-invalid', 'false');
+            errorDiv.textContent = '';
+        }
+    }
+
+    // Helper function to clear all errors
+    function clearAllErrors() {
+        const errorDivs = contactForm.querySelectorAll('.field-error');
+        errorDivs.forEach(div => div.textContent = '');
+
+        const fields = contactForm.querySelectorAll('input, textarea');
+        fields.forEach(field => {
+            field.classList.remove('error');
+            field.setAttribute('aria-invalid', 'false');
+        });
+
+        const errorSummary = document.getElementById('form-error-summary');
+        if (errorSummary) {
+            errorSummary.style.display = 'none';
+            errorSummary.innerHTML = '';
+        }
+    }
+
+    // Helper function to show error summary
+    function showErrorSummary(errors) {
+        const errorSummary = document.getElementById('form-error-summary');
+        if (errorSummary && errors.length > 0) {
+            errorSummary.innerHTML = `
+                <h4>Please correct the following errors:</h4>
+                <ul>${errors.map(err => `<li>${err}</li>`).join('')}</ul>
+            `;
+            errorSummary.style.display = 'block';
+            errorSummary.focus();
+        }
     }
 
     function handleFirebaseSubmit(e) {
         e.preventDefault();
         e.stopImmediatePropagation(); // Stop other handlers
+
+        // Clear previous errors
+        clearAllErrors();
 
         // Get form values
         const name = document.getElementById('name').value.trim();
@@ -24,36 +90,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Basic validation
         let isValid = true;
-        let errorMessage = '';
+        const errors = [];
 
         if (name === '') {
             isValid = false;
-            errorMessage += 'Please enter your name.\n';
+            showFieldError('name', 'Please enter your name.');
+            errors.push('Name is required.');
         }
 
         if (email === '') {
             isValid = false;
-            errorMessage += 'Please enter your email.\n';
+            showFieldError('email', 'Please enter your email address.');
+            errors.push('Email is required.');
         } else if (!isValidEmail(email)) {
             isValid = false;
-            errorMessage += 'Please enter a valid email address.\n';
+            showFieldError('email', 'Please enter a valid email address.');
+            errors.push('Email address is not valid.');
         }
 
         if (message === '') {
             isValid = false;
-            errorMessage += 'Please enter a message.\n';
+            showFieldError('message', 'Please enter a message.');
+            errors.push('Message is required.');
         }
 
         if (!isValid) {
-            alert(errorMessage);
+            showErrorSummary(errors);
+            // Focus on first error field
+            const firstErrorField = contactForm.querySelector('.error');
+            if (firstErrorField) {
+                firstErrorField.focus();
+            }
             return false;
         }
 
         // Show loading state
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Sending...';
+        submitBtn.classList.add('btn-loading');
         submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
 
         // Prepare submission data
         const submission = {
@@ -71,9 +147,19 @@ document.addEventListener('DOMContentLoaded', function() {
             .then((docRef) => {
                 console.log('Submission saved with ID:', docRef.id);
 
+                // Track successful submission in Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'form_submission', {
+                        'event_category': 'Contact',
+                        'event_label': 'Contact Form',
+                        'value': 1
+                    });
+                }
+
                 // Reset button
-                submitBtn.textContent = originalText;
+                submitBtn.classList.remove('btn-loading');
                 submitBtn.disabled = false;
+                submitBtn.setAttribute('aria-busy', 'false');
 
                 // Show success message
                 showFormSuccess();
@@ -84,12 +170,21 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch((error) => {
                 console.error('Error saving submission:', error);
 
-                // Reset button
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+                // Track error in Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'exception', {
+                        'description': 'Form submission failed: ' + error.message,
+                        'fatal': false
+                    });
+                }
 
-                // Show error
-                alert('There was an error submitting your message. Please try again or contact us directly via email or phone.');
+                // Reset button
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.disabled = false;
+                submitBtn.setAttribute('aria-busy', 'false');
+
+                // Show user-friendly error message
+                showErrorSummary(['There was an error submitting your message. Please try again or contact us directly via email or phone.']);
             });
 
         return false;

@@ -706,6 +706,88 @@ section:nth-child(even) {
     resize: vertical;
 }
 
+/* Form Error Styling */
+.field-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    min-height: 1.25rem;
+    display: block;
+}
+
+.form-group input.error,
+.form-group textarea.error {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.form-group input.error:focus,
+.form-group textarea.error:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+}
+
+.form-error-summary {
+    background: #f8d7da;
+    border: 2px solid #dc3545;
+    border-radius: 4px;
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    color: #721c24;
+}
+
+.form-error-summary h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #721c24;
+}
+
+.form-error-summary ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.form-error-summary li {
+    margin-bottom: 0.25rem;
+}
+
+/* Loading Spinner */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid var(--slate-darkest);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-loading::after {
+        animation: none;
+        content: '...';
+        border: none;
+        width: auto;
+        height: auto;
+        color: var(--slate-darkest);
+    }
+}
+
 /* Export Controls */
 .export-controls {
     margin-top: var(--spacing-md);

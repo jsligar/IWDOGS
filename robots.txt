@@ -1,0 +1,20 @@
+# robots.txt for Mount Olympus Irish Wolfhounds (www.iwdogs.com)
+
+# Allow all search engines
+User-agent: *
+
+# Disallow admin and private pages
+Disallow: /admin.html
+Disallow: /admin-*.html
+Disallow: /dashboard.html
+Disallow: /test-*.html
+Disallow: /*.js$
+Disallow: /firebase-*.js
+Disallow: /create-admin.js
+Disallow: /reset-password.js
+
+# Allow everything else
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.iwdogs.com/sitemap.xml
