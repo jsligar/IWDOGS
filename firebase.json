@@ -9,15 +9,51 @@
       "BACKEND_OPTIONS.md",
       "IMAGE_GUIDE.md",
       "IMPROVEMENTS.md",
-      "FIREBASE_SETUP.md"
+      "FIREBASE_SETUP.md",
+      "FIREBASE-SECURITY.md",
+      "IMPROVEMENTS-SUMMARY.md",
+      "create-admin.js",
+      "reset-password.js",
+      "test-auth.html",
+      "users-backup.json"
     ],
     "rewrites": [
       {
-        "source": "**",
+        "source": "/admin{,/**}",
         "destination": "/index.html"
       }
     ],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/index.html",
+        "destination": "/",
+        "type": 301
+      }
+    ],
     "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          },
+          {
+            "key": "X-XSS-Protection",
+            "value": "1; mode=block"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          }
+        ]
+      },
       {
         "source": "**/*.@(jpg|jpeg|gif|png|svg|webp)",
         "headers": [
